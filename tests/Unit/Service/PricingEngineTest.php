@@ -107,4 +107,101 @@ final class PricingEngineTest extends TestCase
         // ASSERT
         $this->assertSame(2.0, $result);
     }
+
+        // --- applyPromoCode ---
+
+    public function test_applies_percentage_discount(): void
+    {
+        // ACT — 20% off 50€ = 40€
+        $result = $this->engine->applyPromoCode(50.0, 'BIENVENUE20');
+
+        // ASSERT
+        $this->assertSame(40.0, $result);
+    }
+
+    public function test_applies_fixed_discount(): void
+    {
+        // ACT — 5€ off 30€ = 25€
+        $result = $this->engine->applyPromoCode(30.0, 'FIXE5');
+
+        // ASSERT
+        $this->assertSame(25.0, $result);
+    }
+
+    public function test_throws_exception_when_promo_expired(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('expired');
+
+        // ACT
+        $this->engine->applyPromoCode(50.0, 'EXPIRE');
+    }
+
+    public function test_throws_exception_when_below_min_order(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('minimum');
+
+        // ACT
+        $this->engine->applyPromoCode(5.0, 'BIENVENUE20');
+    }
+
+    public function test_throws_exception_when_unknown_promo(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown');
+
+        // ACT
+        $this->engine->applyPromoCode(50.0, 'FAKE');
+    }
+
+    public function test_returns_zero_when_fixed_exceeds_subtotal(): void
+    {
+        // ACT — 5€ off 3€ = max(0, -2) = 0
+        $result = $this->engine->applyPromoCode(10.01, 'FIXE5');
+
+        // ASSERT
+        $this->assertSame(5.01, $result);
+    }
+
+    public function test_returns_subtotal_when_null_promo(): void
+    {
+        // ACT
+        $result = $this->engine->applyPromoCode(50.0, null);
+
+        // ASSERT
+        $this->assertSame(50.0, $result);
+    }
+
+    public function test_returns_subtotal_when_empty_promo(): void
+    {
+        // ACT
+        $result = $this->engine->applyPromoCode(50.0, '');
+
+        // ASSERT
+        $this->assertSame(50.0, $result);
+    }
+
+    public function test_throws_exception_when_negative_subtotal(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+
+        // ACT
+        $this->engine->applyPromoCode(-10.0, 'BIENVENUE20');
+    }
+
+    public function test_returns_zero_when_100_percent_discount(): void
+    {
+        // ARRANGE — on teste avec BIENVENUE20 sur le minimum exact: 15€
+        // 20% de 15 = 12€
+        $result = $this->engine->applyPromoCode(15.0, 'BIENVENUE20');
+
+        // ASSERT
+        $this->assertSame(12.0, $result);
+    }
+
 }
