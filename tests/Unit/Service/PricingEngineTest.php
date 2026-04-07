@@ -285,6 +285,134 @@ final class PricingEngineTest extends TestCase
         // ASSERT
         $this->assertSame(1.8, $result);
     }
+    // --- calculateOrderTotal ---
 
+    public function test_returns_correct_total_when_normal_order(): void
+    {
+        // ARRANGE — 2 pizzas 12.50€ + 5km + 2kg + mardi 15h
+        // subtotal = 25€, delivery = 2 + (2*0.50) = 3€, surge = 1.0, total = 28€
+        $items = [['name' => 'Pizza', 'price' => 12.50, 'quantity' => 2]];
+
+        // ACT
+        $result = $this->engine->calculateOrderTotal($items, 5, 2, null, 15, 'tuesday');
+
+        // ASSERT
+        $this->assertSame(25.0, $result->subtotal);
+        $this->assertSame(0.0, $result->discount);
+        $this->assertSame(3.0, $result->deliveryFee);
+        $this->assertSame(1.0, $result->surge);
+        $this->assertSame(28.0, $result->total);
+    }
+
+    public function test_returns_correct_total_when_promo_applied(): void
+    {
+        // ARRANGE — 50€ subtotal + BIENVENUE20 (20% off) + 2km + mardi 15h
+        // subtotal = 50€, discount = 10€, delivery = 2€, surge = 1.0, total = 42€
+        $items = [['name' => 'Sushi', 'price' => 25.0, 'quantity' => 2]];
+
+        // ACT
+        $result = $this->engine->calculateOrderTotal($items, 2, 1, 'BIENVENUE20', 15, 'tuesday');
+
+        // ASSERT
+        $this->assertSame(50.0, $result->subtotal);
+        $this->assertSame(10.0, $result->discount);
+        $this->assertSame(2.0, $result->deliveryFee);
+        $this->assertSame(42.0, $result->total);
+    }
+
+    public function test_applies_surge_to_delivery_fee(): void
+    {
+        // ARRANGE — 5km + vendredi 20h → surge 1.8
+        // delivery = 2 + (2*0.50) = 3€ * 1.8 = 5.4€
+        $items = [['name' => 'Burger', 'price' => 15.0, 'quantity' => 1]];
+
+        // ACT
+        $result = $this->engine->calculateOrderTotal($items, 5, 1, null, 20, 'friday');
+
+        // ASSERT
+        $this->assertSame(1.8, $result->surge);
+        $this->assertSame(5.4, $result->deliveryFee);
+        $this->assertSame(20.4, $result->total);
+    }
+
+    public function test_returns_correct_total_when_multiple_items(): void
+    {
+        // ARRANGE — Pizza 12.50 x2 + Coca 3€ x1 = 28€
+        $items = [
+            ['name' => 'Pizza', 'price' => 12.50, 'quantity' => 2],
+            ['name' => 'Coca', 'price' => 3.0, 'quantity' => 1],
+        ];
+
+        // ACT
+        $result = $this->engine->calculateOrderTotal($items, 2, 1, null, 15, 'tuesday');
+
+        // ASSERT
+        $this->assertSame(28.0, $result->subtotal);
+        $this->assertSame(30.0, $result->total);
+    }
+
+    public function test_throws_exception_when_empty_cart(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('empty');
+
+        // ACT
+        $this->engine->calculateOrderTotal([], 5, 1, null, 15, 'tuesday');
+    }
+
+    public function test_throws_exception_when_negative_price(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+
+        // ACT
+        $items = [['name' => 'Bug', 'price' => -5.0, 'quantity' => 1]];
+        $this->engine->calculateOrderTotal($items, 5, 1, null, 15, 'tuesday');
+    }
+
+    public function test_throws_exception_when_zero_quantity(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+
+        // ACT
+        $items = [['name' => 'Bug', 'price' => 10.0, 'quantity' => 0]];
+        $this->engine->calculateOrderTotal($items, 5, 1, null, 15, 'tuesday');
+    }
+
+    public function test_throws_exception_when_restaurant_closed(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('closed');
+
+        // ACT
+        $items = [['name' => 'Pizza', 'price' => 12.50, 'quantity' => 1]];
+        $this->engine->calculateOrderTotal($items, 5, 1, null, 23, 'tuesday');
+    }
+
+    public function test_throws_exception_when_beyond_delivery_zone(): void
+    {
+        // ASSERT
+        $this->expectException(\InvalidArgumentException::class);
+
+        // ACT
+        $items = [['name' => 'Pizza', 'price' => 12.50, 'quantity' => 1]];
+        $this->engine->calculateOrderTotal($items, 15, 1, null, 15, 'tuesday');
+    }
+
+    public function test_returns_rounded_values(): void
+    {
+        // ARRANGE — 3 items at 3.33€ = 9.99€ + 2km = 11.99€
+        $items = [['name' => 'Tapas', 'price' => 3.33, 'quantity' => 3]];
+
+        // ACT
+        $result = $this->engine->calculateOrderTotal($items, 2, 1, null, 15, 'tuesday');
+
+        // ASSERT
+        $this->assertSame(9.99, $result->subtotal);
+        $this->assertSame(11.99, $result->total);
+    }
 
 }

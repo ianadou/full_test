@@ -112,4 +112,52 @@ final class PricingEngine
         return 1.0;
     }
 
+        /**
+     * @param array<array{name: string, price: float, quantity: int}> $items
+     */
+    public function calculateOrderTotal(
+        array $items,
+        float $distance,
+        float $weight,
+        ?string $promoCode,
+        float $hour,
+        string $dayOfWeek,
+    ): OrderResult {
+        if ($items === []) {
+            throw new \InvalidArgumentException('Cart cannot be empty');
+        }
+
+        foreach ($items as $item) {
+            if ($item['price'] < 0) {
+                throw new \InvalidArgumentException('Item price cannot be negative');
+            }
+            if ($item['quantity'] <= 0) {
+                throw new \InvalidArgumentException('Item quantity must be positive');
+            }
+        }
+
+        $surge = $this->calculateSurge($hour, $dayOfWeek);
+
+        if ($surge === 0.0) {
+            throw new \InvalidArgumentException('Restaurant is closed');
+        }
+
+        $subtotal = 0.0;
+        foreach ($items as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+        $subtotal = round($subtotal, 2);
+
+        $discountedSubtotal = $this->applyPromoCode($subtotal, $promoCode);
+        $discount = round($subtotal - $discountedSubtotal, 2);
+
+        $deliveryFee = $this->calculateDeliveryFee($distance, $weight);
+        $deliveryFee = round($deliveryFee * $surge, 2);
+
+        $total = round($discountedSubtotal + $deliveryFee, 2);
+
+        return new OrderResult($subtotal, $discount, $deliveryFee, $surge, $total);
+    }
+
+
 }
