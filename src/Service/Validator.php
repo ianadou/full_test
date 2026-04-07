@@ -14,7 +14,8 @@ final class Validator
 
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
-        public function isValidPassword(?string $password): PasswordValidationResult
+
+    public function isValidPassword(?string $password): PasswordValidationResult
     {
         $errors = [];
 
@@ -44,7 +45,8 @@ final class Validator
 
         return new PasswordValidationResult($errors === [], $errors);
     }
-        public function isValidAge(mixed $age): bool
+
+    public function isValidAge(mixed $age): bool
     {
         if (!is_int($age)) {
             return false;
@@ -52,6 +54,4 @@ final class Validator
 
         return $age >= 0 && $age <= 150;
     }
-
-
 }
