@@ -26,7 +26,7 @@ final class PromoController extends AbstractController
         $code = $data['code'] ?? null;
         $subtotal = (float) ($data['subtotal'] ?? 0);
 
-        if ($code === null || $code === '') {
+        if (null === $code || '' === $code) {
             return $this->json(['error' => 'Promo code is required'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -34,6 +34,7 @@ final class PromoController extends AbstractController
             $discounted = $this->pricingEngine->applyPromoCode($subtotal, $code);
         } catch (\InvalidArgumentException $e) {
             $status = str_contains($e->getMessage(), 'Unknown') ? Response::HTTP_NOT_FOUND : Response::HTTP_BAD_REQUEST;
+
             return $this->json(['error' => $e->getMessage()], $status);
         }
 

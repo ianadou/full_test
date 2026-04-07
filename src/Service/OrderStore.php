@@ -13,6 +13,7 @@ final class OrderStore
 
     /**
      * @param array<string, mixed> $orderData
+     *
      * @return array<string, mixed>
      */
     public function save(array $orderData): array

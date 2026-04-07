@@ -5,3 +5,4 @@ parameters:
         - tests
     excludePaths:
         - vendor
+        - tests/bootstrap.php

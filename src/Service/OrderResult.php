@@ -1,9 +1,11 @@
 <?php
-declare(strict_types= 1);
+
+declare(strict_types=1);
 
 namespace App\Service;
 
-final class OrderResult{
+final class OrderResult
+{
     public function __construct(
         public readonly float $subtotal,
         public readonly float $discount,

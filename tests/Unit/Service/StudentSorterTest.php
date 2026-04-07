@@ -16,7 +16,7 @@ final class StudentSorterTest extends TestCase
         $this->sorter = new StudentSorter();
     }
 
-    public function test_sorts_students_by_grade_ascending(): void
+    public function testSortsStudentsByGradeAscending(): void
     {
         // ARRANGE
         $students = [
@@ -33,7 +33,8 @@ final class StudentSorterTest extends TestCase
         $this->assertSame('Alice', $result[1]['name']);
         $this->assertSame('Charlie', $result[2]['name']);
     }
-        public function test_sorts_students_by_grade_descending(): void
+
+    public function testSortsStudentsByGradeDescending(): void
     {
         // ARRANGE
         $students = [
@@ -51,7 +52,7 @@ final class StudentSorterTest extends TestCase
         $this->assertSame('Bob', $result[2]['name']);
     }
 
-    public function test_sorts_students_by_name_ascending(): void
+    public function testSortsStudentsByNameAscending(): void
     {
         // ARRANGE
         $students = [
@@ -69,7 +70,7 @@ final class StudentSorterTest extends TestCase
         $this->assertSame('Charlie', $result[2]['name']);
     }
 
-    public function test_sorts_students_by_age_ascending(): void
+    public function testSortsStudentsByAgeAscending(): void
     {
         // ARRANGE
         $students = [
@@ -87,7 +88,7 @@ final class StudentSorterTest extends TestCase
         $this->assertSame('Alice', $result[2]['name']);
     }
 
-    public function test_returns_empty_array_when_null_input(): void
+    public function testReturnsEmptyArrayWhenEmptyInput(): void
     {
         // ACT
         $result = $this->sorter->sort([], 'grade');
@@ -96,16 +97,16 @@ final class StudentSorterTest extends TestCase
         $this->assertSame([], $result);
     }
 
-    public function test_returns_empty_array_when_empty_input(): void
+    public function testReturnsEmptyArrayWhenEmptyInputSortedByName(): void
     {
         // ACT
-        $result = $this->sorter->sort([], 'grade');
+        $result = $this->sorter->sort([], 'name');
 
         // ASSERT
         $this->assertSame([], $result);
     }
 
-    public function test_does_not_modify_original_array(): void
+    public function testDoesNotModifyOriginalArray(): void
     {
         // ARRANGE
         $students = [
@@ -121,7 +122,7 @@ final class StudentSorterTest extends TestCase
         $this->assertSame($original, $students);
     }
 
-    public function test_defaults_to_ascending_order(): void
+    public function testDefaultsToAscendingOrder(): void
     {
         // ARRANGE
         $students = [
@@ -136,5 +137,4 @@ final class StudentSorterTest extends TestCase
         $this->assertSame('Alice', $result[0]['name']);
         $this->assertSame('Bob', $result[1]['name']);
     }
-
 }

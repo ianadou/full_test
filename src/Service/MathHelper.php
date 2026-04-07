@@ -6,9 +6,12 @@ namespace App\Service;
 
 final class MathHelper
 {
+    /**
+     * @param float[]|null $numbers
+     */
     public function calculateAverage(?array $numbers): float
     {
-        if ($numbers === null || $numbers === []) {
+        if (null === $numbers || [] === $numbers) {
             return 0.0;
         }
 

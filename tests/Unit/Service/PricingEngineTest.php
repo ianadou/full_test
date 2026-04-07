@@ -18,7 +18,7 @@ final class PricingEngineTest extends TestCase
 
     // --- calculateDeliveryFee ---
 
-    public function test_returns_base_fee_when_short_distance_light_weight(): void
+    public function testReturnsBaseFeeWhenShortDistanceLightWeight(): void
     {
         // ACT
         $result = $this->engine->calculateDeliveryFee(2, 1);
@@ -27,7 +27,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(2.0, $result);
     }
 
-    public function test_returns_base_fee_when_exactly_3km(): void
+    public function testReturnsBaseFeeWhenExactly3km(): void
     {
         // ACT
         $result = $this->engine->calculateDeliveryFee(3, 1);
@@ -36,7 +36,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(2.0, $result);
     }
 
-    public function test_adds_distance_supplement_when_beyond_3km(): void
+    public function testAddsDistanceSupplementWhenBeyond3km(): void
     {
         // ACT — 6km: 2.00 + (3 * 0.50) = 3.50
         $result = $this->engine->calculateDeliveryFee(6, 2);
@@ -45,7 +45,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(3.5, $result);
     }
 
-    public function test_adds_weight_supplement_when_above_5kg(): void
+    public function testAddsWeightSupplementWhenAbove5kg(): void
     {
         // ACT — 5km, 8kg: 2.00 + (2 * 0.50) + 1.50 = 4.50
         $result = $this->engine->calculateDeliveryFee(5, 8);
@@ -54,7 +54,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(4.5, $result);
     }
 
-    public function test_no_weight_supplement_when_exactly_5kg(): void
+    public function testNoWeightSupplementWhenExactly5kg(): void
     {
         // ACT — 2km, 5kg: 2.00 (pas de supplement)
         $result = $this->engine->calculateDeliveryFee(2, 5);
@@ -63,7 +63,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(2.0, $result);
     }
 
-    public function test_returns_max_fee_when_exactly_10km_heavy(): void
+    public function testReturnsMaxFeeWhenExactly10kmHeavy(): void
     {
         // ACT — 10km, 6kg: 2.00 + (7 * 0.50) + 1.50 = 7.00
         $result = $this->engine->calculateDeliveryFee(10, 6);
@@ -72,7 +72,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(7.0, $result);
     }
 
-    public function test_throws_exception_when_beyond_10km(): void
+    public function testThrowsExceptionWhenBeyond10km(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -81,7 +81,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateDeliveryFee(15, 1);
     }
 
-    public function test_throws_exception_when_negative_distance(): void
+    public function testThrowsExceptionWhenNegativeDistance(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -90,7 +90,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateDeliveryFee(-1, 1);
     }
 
-    public function test_throws_exception_when_negative_weight(): void
+    public function testThrowsExceptionWhenNegativeWeight(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -99,7 +99,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateDeliveryFee(5, -1);
     }
 
-    public function test_returns_base_fee_when_zero_distance(): void
+    public function testReturnsBaseFeeWhenZeroDistance(): void
     {
         // ACT
         $result = $this->engine->calculateDeliveryFee(0, 1);
@@ -108,9 +108,9 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(2.0, $result);
     }
 
-        // --- applyPromoCode ---
+    // --- applyPromoCode ---
 
-    public function test_applies_percentage_discount(): void
+    public function testAppliesPercentageDiscount(): void
     {
         // ACT — 20% off 50€ = 40€
         $result = $this->engine->applyPromoCode(50.0, 'BIENVENUE20');
@@ -119,7 +119,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(40.0, $result);
     }
 
-    public function test_applies_fixed_discount(): void
+    public function testAppliesFixedDiscount(): void
     {
         // ACT — 5€ off 30€ = 25€
         $result = $this->engine->applyPromoCode(30.0, 'FIXE5');
@@ -128,7 +128,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(25.0, $result);
     }
 
-    public function test_throws_exception_when_promo_expired(): void
+    public function testThrowsExceptionWhenPromoExpired(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -138,7 +138,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->applyPromoCode(50.0, 'EXPIRE');
     }
 
-    public function test_throws_exception_when_below_min_order(): void
+    public function testThrowsExceptionWhenBelowMinOrder(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -148,7 +148,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->applyPromoCode(5.0, 'BIENVENUE20');
     }
 
-    public function test_throws_exception_when_unknown_promo(): void
+    public function testThrowsExceptionWhenUnknownPromo(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -158,7 +158,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->applyPromoCode(50.0, 'FAKE');
     }
 
-    public function test_returns_zero_when_fixed_exceeds_subtotal(): void
+    public function testReturnsZeroWhenFixedExceedsSubtotal(): void
     {
         // ACT — 5€ off 3€ = max(0, -2) = 0
         $result = $this->engine->applyPromoCode(10.01, 'FIXE5');
@@ -167,7 +167,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(5.01, $result);
     }
 
-    public function test_returns_subtotal_when_null_promo(): void
+    public function testReturnsSubtotalWhenNullPromo(): void
     {
         // ACT
         $result = $this->engine->applyPromoCode(50.0, null);
@@ -176,7 +176,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(50.0, $result);
     }
 
-    public function test_returns_subtotal_when_empty_promo(): void
+    public function testReturnsSubtotalWhenEmptyPromo(): void
     {
         // ACT
         $result = $this->engine->applyPromoCode(50.0, '');
@@ -185,7 +185,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(50.0, $result);
     }
 
-    public function test_throws_exception_when_negative_subtotal(): void
+    public function testThrowsExceptionWhenNegativeSubtotal(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -194,7 +194,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->applyPromoCode(-10.0, 'BIENVENUE20');
     }
 
-    public function test_returns_zero_when_100_percent_discount(): void
+    public function testReturnsZeroWhen100PercentDiscount(): void
     {
         // ARRANGE — on teste avec BIENVENUE20 sur le minimum exact: 15€
         // 20% de 15 = 12€
@@ -203,9 +203,9 @@ final class PricingEngineTest extends TestCase
         // ASSERT
         $this->assertSame(12.0, $result);
     }
-        // --- calculateSurge ---
+    // --- calculateSurge ---
 
-    public function test_returns_normal_rate_when_weekday_afternoon(): void
+    public function testReturnsNormalRateWhenWeekdayAfternoon(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(15, 'tuesday');
@@ -214,7 +214,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(1.0, $result);
     }
 
-    public function test_returns_lunch_rate_when_weekday_noon(): void
+    public function testReturnsLunchRateWhenWeekdayNoon(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(12.5, 'wednesday');
@@ -223,7 +223,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(1.3, $result);
     }
 
-    public function test_returns_dinner_rate_when_weekday_evening(): void
+    public function testReturnsDinnerRateWhenWeekdayEvening(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(20, 'thursday');
@@ -232,7 +232,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(1.5, $result);
     }
 
-    public function test_returns_weekend_rate_when_friday_evening(): void
+    public function testReturnsWeekendRateWhenFridayEvening(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(21, 'friday');
@@ -241,7 +241,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(1.8, $result);
     }
 
-    public function test_returns_sunday_rate_when_sunday(): void
+    public function testReturnsSundayRateWhenSunday(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(14, 'sunday');
@@ -250,7 +250,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(1.2, $result);
     }
 
-    public function test_returns_closed_when_before_opening(): void
+    public function testReturnsClosedWhenBeforeOpening(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(9.59, 'monday');
@@ -259,7 +259,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(0.0, $result);
     }
 
-    public function test_returns_open_when_exactly_10(): void
+    public function testReturnsOpenWhenExactly10(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(10, 'monday');
@@ -268,7 +268,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(1.0, $result);
     }
 
-    public function test_returns_closed_when_exactly_22(): void
+    public function testReturnsClosedWhenExactly22(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(22, 'tuesday');
@@ -277,7 +277,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(0.0, $result);
     }
 
-    public function test_returns_weekend_rate_when_exactly_19_on_saturday(): void
+    public function testReturnsWeekendRateWhenExactly19OnSaturday(): void
     {
         // ACT
         $result = $this->engine->calculateSurge(19, 'saturday');
@@ -287,7 +287,7 @@ final class PricingEngineTest extends TestCase
     }
     // --- calculateOrderTotal ---
 
-    public function test_returns_correct_total_when_normal_order(): void
+    public function testReturnsCorrectTotalWhenNormalOrder(): void
     {
         // ARRANGE — 2 pizzas 12.50€ + 5km + 2kg + mardi 15h
         // subtotal = 25€, delivery = 2 + (2*0.50) = 3€, surge = 1.0, total = 28€
@@ -304,7 +304,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(28.0, $result->total);
     }
 
-    public function test_returns_correct_total_when_promo_applied(): void
+    public function testReturnsCorrectTotalWhenPromoApplied(): void
     {
         // ARRANGE — 50€ subtotal + BIENVENUE20 (20% off) + 2km + mardi 15h
         // subtotal = 50€, discount = 10€, delivery = 2€, surge = 1.0, total = 42€
@@ -320,7 +320,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(42.0, $result->total);
     }
 
-    public function test_applies_surge_to_delivery_fee(): void
+    public function testAppliesSurgeToDeliveryFee(): void
     {
         // ARRANGE — 5km + vendredi 20h → surge 1.8
         // delivery = 2 + (2*0.50) = 3€ * 1.8 = 5.4€
@@ -335,7 +335,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(20.4, $result->total);
     }
 
-    public function test_returns_correct_total_when_multiple_items(): void
+    public function testReturnsCorrectTotalWhenMultipleItems(): void
     {
         // ARRANGE — Pizza 12.50 x2 + Coca 3€ x1 = 28€
         $items = [
@@ -351,7 +351,7 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(30.0, $result->total);
     }
 
-    public function test_throws_exception_when_empty_cart(): void
+    public function testThrowsExceptionWhenEmptyCart(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -361,7 +361,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateOrderTotal([], 5, 1, null, 15, 'tuesday');
     }
 
-    public function test_throws_exception_when_negative_price(): void
+    public function testThrowsExceptionWhenNegativePrice(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -371,7 +371,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateOrderTotal($items, 5, 1, null, 15, 'tuesday');
     }
 
-    public function test_throws_exception_when_zero_quantity(): void
+    public function testThrowsExceptionWhenZeroQuantity(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -381,7 +381,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateOrderTotal($items, 5, 1, null, 15, 'tuesday');
     }
 
-    public function test_throws_exception_when_restaurant_closed(): void
+    public function testThrowsExceptionWhenRestaurantClosed(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -392,7 +392,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateOrderTotal($items, 5, 1, null, 23, 'tuesday');
     }
 
-    public function test_throws_exception_when_beyond_delivery_zone(): void
+    public function testThrowsExceptionWhenBeyondDeliveryZone(): void
     {
         // ASSERT
         $this->expectException(\InvalidArgumentException::class);
@@ -402,7 +402,7 @@ final class PricingEngineTest extends TestCase
         $this->engine->calculateOrderTotal($items, 15, 1, null, 15, 'tuesday');
     }
 
-    public function test_returns_rounded_values(): void
+    public function testReturnsRoundedValues(): void
     {
         // ARRANGE — 3 items at 3.33€ = 9.99€ + 2km = 11.99€
         $items = [['name' => 'Tapas', 'price' => 3.33, 'quantity' => 3]];
@@ -414,5 +414,4 @@ final class PricingEngineTest extends TestCase
         $this->assertSame(9.99, $result->subtotal);
         $this->assertSame(11.99, $result->total);
     }
-
 }

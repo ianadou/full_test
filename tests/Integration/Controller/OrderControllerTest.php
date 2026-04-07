@@ -35,7 +35,7 @@ final class OrderControllerTest extends WebTestCase
 
     // --- POST /orders/simulate ---
 
-    public function test_simulate_returns_200_when_valid_order(): void
+    public function testSimulateReturns200WhenValidOrder(): void
     {
         // ACT
         $this->client->request('POST', '/orders/simulate', [], [], ['CONTENT_TYPE' => 'application/json'], $this->validPayload());
@@ -48,7 +48,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertSame(28.0, (float) $data['total']);
     }
 
-    public function test_simulate_applies_promo_code(): void
+    public function testSimulateAppliesPromoCode(): void
     {
         // ARRANGE
         $payload = json_encode([
@@ -69,7 +69,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertSame(10.0, (float) $data['discount']);
     }
 
-    public function test_simulate_returns_400_when_expired_promo(): void
+    public function testSimulateReturns400WhenExpiredPromo(): void
     {
         // ARRANGE
         $payload = json_encode([
@@ -88,7 +88,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
-    public function test_simulate_returns_400_when_empty_cart(): void
+    public function testSimulateReturns400WhenEmptyCart(): void
     {
         // ARRANGE
         $payload = json_encode([
@@ -106,7 +106,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
-    public function test_simulate_returns_400_when_beyond_delivery_zone(): void
+    public function testSimulateReturns400WhenBeyondDeliveryZone(): void
     {
         // ARRANGE
         $payload = json_encode([
@@ -124,7 +124,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
-    public function test_simulate_returns_400_when_restaurant_closed(): void
+    public function testSimulateReturns400WhenRestaurantClosed(): void
     {
         // ARRANGE
         $payload = json_encode([
@@ -142,7 +142,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
-    public function test_simulate_applies_surge_to_delivery(): void
+    public function testSimulateAppliesSurgeToDelivery(): void
     {
         // ARRANGE — vendredi 20h → surge 1.8, delivery 5km = 3€ * 1.8 = 5.4€
         $payload = json_encode([
@@ -164,7 +164,7 @@ final class OrderControllerTest extends WebTestCase
 
     // --- POST /orders ---
 
-    public function test_store_returns_201_with_id(): void
+    public function testStoreReturns201WithId(): void
     {
         // ACT
         $this->client->request('POST', '/orders', [], [], ['CONTENT_TYPE' => 'application/json'], $this->validPayload());
@@ -175,14 +175,14 @@ final class OrderControllerTest extends WebTestCase
         $this->assertArrayHasKey('id', $data);
     }
 
-    public function test_store_order_is_retrievable(): void
+    public function testStoreOrderIsRetrievable(): void
     {
         // ARRANGE
         $this->client->request('POST', '/orders', [], [], ['CONTENT_TYPE' => 'application/json'], $this->validPayload());
         $data = json_decode($this->client->getResponse()->getContent(), true);
 
         // ACT
-        $this->client->request('GET', '/orders/' . $data['id']);
+        $this->client->request('GET', '/orders/'.$data['id']);
 
         // ASSERT
         $this->assertResponseStatusCodeSame(200);
@@ -190,7 +190,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertSame($data['id'], $order['id']);
     }
 
-    public function test_store_creates_unique_ids(): void
+    public function testStoreCreatesUniqueIds(): void
     {
         // ACT
         $this->client->request('POST', '/orders', [], [], ['CONTENT_TYPE' => 'application/json'], $this->validPayload());
@@ -203,7 +203,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertNotSame($first['id'], $second['id']);
     }
 
-    public function test_store_returns_400_when_invalid(): void
+    public function testStoreReturns400WhenInvalid(): void
     {
         // ARRANGE
         $payload = json_encode(['items' => [], 'distance' => 2, 'weight' => 1, 'hour' => 15, 'dayOfWeek' => 'tuesday'], JSON_THROW_ON_ERROR);
@@ -215,7 +215,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
-    public function test_store_does_not_persist_invalid_order(): void
+    public function testStoreDoesNotPersistInvalidOrder(): void
     {
         // ARRANGE
         $payload = json_encode(['items' => [], 'distance' => 2, 'weight' => 1, 'hour' => 15, 'dayOfWeek' => 'tuesday'], JSON_THROW_ON_ERROR);
@@ -230,14 +230,14 @@ final class OrderControllerTest extends WebTestCase
 
     // --- GET /orders/:id ---
 
-    public function test_show_returns_200_when_order_exists(): void
+    public function testShowReturns200WhenOrderExists(): void
     {
         // ARRANGE
         $this->client->request('POST', '/orders', [], [], ['CONTENT_TYPE' => 'application/json'], $this->validPayload());
         $data = json_decode($this->client->getResponse()->getContent(), true);
 
         // ACT
-        $this->client->request('GET', '/orders/' . $data['id']);
+        $this->client->request('GET', '/orders/'.$data['id']);
 
         // ASSERT
         $this->assertResponseStatusCodeSame(200);
@@ -246,7 +246,7 @@ final class OrderControllerTest extends WebTestCase
         $this->assertArrayHasKey('total', $order);
     }
 
-    public function test_show_returns_404_when_order_not_found(): void
+    public function testShowReturns404WhenOrderNotFound(): void
     {
         // ACT
         $this->client->request('GET', '/orders/999');
@@ -255,14 +255,14 @@ final class OrderControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404);
     }
 
-    public function test_show_returns_correct_structure(): void
+    public function testShowReturnsCorrectStructure(): void
     {
         // ARRANGE
         $this->client->request('POST', '/orders', [], [], ['CONTENT_TYPE' => 'application/json'], $this->validPayload());
         $data = json_decode($this->client->getResponse()->getContent(), true);
 
         // ACT
-        $this->client->request('GET', '/orders/' . $data['id']);
+        $this->client->request('GET', '/orders/'.$data['id']);
         $order = json_decode($this->client->getResponse()->getContent(), true);
 
         // ASSERT

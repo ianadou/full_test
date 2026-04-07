@@ -8,16 +8,16 @@ final class StringHelper
 {
     public function capitalize(?string $str): string
     {
-        if ($str === null || $str === '') {
+        if (null === $str || '' === $str) {
             return '';
         }
 
         return ucfirst(strtolower($str));
     }
 
-        public function slugify(?string $text): string
+    public function slugify(?string $text): string
     {
-        if ($text === null || $text === '') {
+        if (null === $text || '' === $text) {
             return '';
         }
 

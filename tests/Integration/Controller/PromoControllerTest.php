@@ -16,7 +16,7 @@ final class PromoControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
-    public function test_validate_returns_200_when_valid_code(): void
+    public function testValidateReturns200WhenValidCode(): void
     {
         // ARRANGE
         $payload = json_encode(['code' => 'BIENVENUE20', 'subtotal' => 50.0], JSON_THROW_ON_ERROR);
@@ -31,7 +31,7 @@ final class PromoControllerTest extends WebTestCase
         $this->assertSame(10.0, (float) $data['discount']);
     }
 
-    public function test_validate_returns_400_when_expired_code(): void
+    public function testValidateReturns400WhenExpiredCode(): void
     {
         // ARRANGE
         $payload = json_encode(['code' => 'EXPIRE', 'subtotal' => 50.0], JSON_THROW_ON_ERROR);
@@ -45,7 +45,7 @@ final class PromoControllerTest extends WebTestCase
         $this->assertArrayHasKey('error', $data);
     }
 
-    public function test_validate_returns_400_when_below_minimum(): void
+    public function testValidateReturns400WhenBelowMinimum(): void
     {
         // ARRANGE
         $payload = json_encode(['code' => 'BIENVENUE20', 'subtotal' => 5.0], JSON_THROW_ON_ERROR);
@@ -57,7 +57,7 @@ final class PromoControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
-    public function test_validate_returns_404_when_unknown_code(): void
+    public function testValidateReturns404WhenUnknownCode(): void
     {
         // ARRANGE
         $payload = json_encode(['code' => 'FAKE', 'subtotal' => 50.0], JSON_THROW_ON_ERROR);
@@ -69,7 +69,7 @@ final class PromoControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404);
     }
 
-    public function test_validate_returns_400_when_no_code(): void
+    public function testValidateReturns400WhenNoCode(): void
     {
         // ARRANGE
         $payload = json_encode(['subtotal' => 50.0], JSON_THROW_ON_ERROR);

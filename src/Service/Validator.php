@@ -8,18 +8,18 @@ final class Validator
 {
     public function isValidEmail(?string $email): bool
     {
-        if ($email === null || $email === '') {
+        if (null === $email || '' === $email) {
             return false;
         }
 
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        return false !== filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
     public function isValidPassword(?string $password): PasswordValidationResult
     {
         $errors = [];
 
-        if ($password === null || $password === '') {
+        if (null === $password || '' === $password) {
             return new PasswordValidationResult(false, ['Password is required']);
         }
 
@@ -35,7 +35,7 @@ final class Validator
             $errors[] = 'Must contain at least one lowercase letter';
         }
 
-        if (!preg_match('/[0-9]/', $password)) {
+        if (!preg_match('/\d/', $password)) {
             $errors[] = 'Must contain at least one digit';
         }
 
@@ -43,7 +43,7 @@ final class Validator
             $errors[] = 'Must contain at least one special character (!@#$%^&*)';
         }
 
-        return new PasswordValidationResult($errors === [], $errors);
+        return new PasswordValidationResult([] === $errors, $errors);
     }
 
     public function isValidAge(mixed $age): bool

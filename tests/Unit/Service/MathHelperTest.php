@@ -18,7 +18,7 @@ final class MathHelperTest extends TestCase
 
     // --- calculateAverage ---
 
-    public function test_returns_average_when_multiple_numbers(): void
+    public function testReturnsAverageWhenMultipleNumbers(): void
     {
         // ACT
         $result = $this->helper->calculateAverage([10, 12, 14]);
@@ -27,7 +27,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(12.0, $result);
     }
 
-    public function test_returns_number_when_single_element(): void
+    public function testReturnsNumberWhenSingleElement(): void
     {
         // ACT
         $result = $this->helper->calculateAverage([15]);
@@ -36,7 +36,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(15.0, $result);
     }
 
-    public function test_returns_zero_when_empty_array(): void
+    public function testReturnsZeroWhenEmptyArray(): void
     {
         // ACT
         $result = $this->helper->calculateAverage([]);
@@ -45,7 +45,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(0.0, $result);
     }
 
-    public function test_returns_zero_when_null_array(): void
+    public function testReturnsZeroWhenNullArray(): void
     {
         // ACT
         $result = $this->helper->calculateAverage(null);
@@ -54,7 +54,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(0.0, $result);
     }
 
-    public function test_returns_rounded_average_when_decimals(): void
+    public function testReturnsRoundedAverageWhenDecimals(): void
     {
         // ACT
         $result = $this->helper->calculateAverage([10, 11, 12]);
@@ -65,7 +65,7 @@ final class MathHelperTest extends TestCase
 
     // --- clamp ---
 
-    public function test_returns_value_when_within_range(): void
+    public function testReturnsValueWhenWithinRange(): void
     {
         // ACT
         $result = $this->helper->clamp(5, 0, 10);
@@ -74,7 +74,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(5.0, $result);
     }
 
-    public function test_returns_min_when_value_below_range(): void
+    public function testReturnsMinWhenValueBelowRange(): void
     {
         // ACT
         $result = $this->helper->clamp(-5, 0, 10);
@@ -83,7 +83,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(0.0, $result);
     }
 
-    public function test_returns_max_when_value_above_range(): void
+    public function testReturnsMaxWhenValueAboveRange(): void
     {
         // ACT
         $result = $this->helper->clamp(15, 0, 10);
@@ -92,7 +92,7 @@ final class MathHelperTest extends TestCase
         $this->assertSame(10.0, $result);
     }
 
-    public function test_returns_value_when_all_bounds_equal(): void
+    public function testReturnsValueWhenAllBoundsEqual(): void
     {
         // ACT
         $result = $this->helper->clamp(0, 0, 0);

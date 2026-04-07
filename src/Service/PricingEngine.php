@@ -28,7 +28,7 @@ final class PricingEngine
 
         return round($fee, 2);
     }
-        /** @var PromoCode[] */
+    /** @var PromoCode[] */
     private array $promoCodes = [];
 
     public function __construct()
@@ -46,7 +46,7 @@ final class PricingEngine
             throw new \InvalidArgumentException('Subtotal must be positive');
         }
 
-        if ($promoCode === null || $promoCode === '') {
+        if (null === $promoCode || '' === $promoCode) {
             return $subtotal;
         }
 
@@ -58,7 +58,7 @@ final class PricingEngine
             }
         }
 
-        if ($found === null) {
+        if (null === $found) {
             throw new \InvalidArgumentException('Unknown promo code');
         }
 
@@ -79,7 +79,7 @@ final class PricingEngine
         return round(max(0.0, $discounted), 2);
     }
 
-        public function calculateSurge(float $hour, string $dayOfWeek): float
+    public function calculateSurge(float $hour, string $dayOfWeek): float
     {
         $day = strtolower($dayOfWeek);
 
@@ -87,7 +87,7 @@ final class PricingEngine
             return 0.0;
         }
 
-        if ($day === 'sunday') {
+        if ('sunday' === $day) {
             return 1.2;
         }
 
@@ -112,7 +112,7 @@ final class PricingEngine
         return 1.0;
     }
 
-        /**
+    /**
      * @param array<array{name: string, price: float, quantity: int}> $items
      */
     public function calculateOrderTotal(
@@ -123,7 +123,7 @@ final class PricingEngine
         float $hour,
         string $dayOfWeek,
     ): OrderResult {
-        if ($items === []) {
+        if ([] === $items) {
             throw new \InvalidArgumentException('Cart cannot be empty');
         }
 
@@ -138,7 +138,7 @@ final class PricingEngine
 
         $surge = $this->calculateSurge($hour, $dayOfWeek);
 
-        if ($surge === 0.0) {
+        if (0.0 === $surge) {
             throw new \InvalidArgumentException('Restaurant is closed');
         }
 
@@ -158,6 +158,4 @@ final class PricingEngine
 
         return new OrderResult($subtotal, $discount, $deliveryFee, $surge, $total);
     }
-
-
 }

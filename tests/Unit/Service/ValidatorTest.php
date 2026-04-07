@@ -18,7 +18,7 @@ final class ValidatorTest extends TestCase
 
     // --- isValidEmail ---
 
-    public function test_returns_true_when_valid_email(): void
+    public function testReturnsTrueWhenValidEmail(): void
     {
         // ACT
         $result = $this->validator->isValidEmail('user@example.com');
@@ -27,7 +27,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_returns_true_when_email_with_tag(): void
+    public function testReturnsTrueWhenEmailWithTag(): void
     {
         // ACT
         $result = $this->validator->isValidEmail('user.name+tag@domain.co');
@@ -36,7 +36,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_returns_false_when_no_at_sign(): void
+    public function testReturnsFalseWhenNoAtSign(): void
     {
         // ACT
         $result = $this->validator->isValidEmail('invalid');
@@ -45,7 +45,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_no_local_part(): void
+    public function testReturnsFalseWhenNoLocalPart(): void
     {
         // ACT
         $result = $this->validator->isValidEmail('@domain.com');
@@ -54,7 +54,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_no_domain(): void
+    public function testReturnsFalseWhenNoDomain(): void
     {
         // ACT
         $result = $this->validator->isValidEmail('user@');
@@ -63,7 +63,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_empty_email(): void
+    public function testReturnsFalseWhenEmptyEmail(): void
     {
         // ACT
         $result = $this->validator->isValidEmail('');
@@ -72,7 +72,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_null_email(): void
+    public function testReturnsFalseWhenNullEmail(): void
     {
         // ACT
         $result = $this->validator->isValidEmail(null);
@@ -80,9 +80,9 @@ final class ValidatorTest extends TestCase
         // ASSERT
         $this->assertFalse($result);
     }
-        // --- isValidPassword ---
+    // --- isValidPassword ---
 
-    public function test_returns_valid_when_strong_password(): void
+    public function testReturnsValidWhenStrongPassword(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('Passw0rd!');
@@ -92,7 +92,7 @@ final class ValidatorTest extends TestCase
         $this->assertSame([], $result->errors);
     }
 
-    public function test_returns_all_errors_when_short_password(): void
+    public function testReturnsAllErrorsWhenShortPassword(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('short');
@@ -105,7 +105,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('Must contain at least one special character (!@#$%^&*)', $result->errors);
     }
 
-    public function test_returns_uppercase_error_when_no_uppercase(): void
+    public function testReturnsUppercaseErrorWhenNoUppercase(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('alllowercase1!');
@@ -115,7 +115,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('Must contain at least one uppercase letter', $result->errors);
     }
 
-    public function test_returns_lowercase_error_when_no_lowercase(): void
+    public function testReturnsLowercaseErrorWhenNoLowercase(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('ALLUPPERCASE1!');
@@ -125,7 +125,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('Must contain at least one lowercase letter', $result->errors);
     }
 
-    public function test_returns_digit_error_when_no_digit(): void
+    public function testReturnsDigitErrorWhenNoDigit(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('NoDigits!here');
@@ -135,7 +135,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('Must contain at least one digit', $result->errors);
     }
 
-    public function test_returns_special_error_when_no_special_char(): void
+    public function testReturnsSpecialErrorWhenNoSpecialChar(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('NoSpecial1here');
@@ -145,7 +145,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('Must contain at least one special character (!@#$%^&*)', $result->errors);
     }
 
-    public function test_returns_required_error_when_empty_password(): void
+    public function testReturnsRequiredErrorWhenEmptyPassword(): void
     {
         // ACT
         $result = $this->validator->isValidPassword('');
@@ -155,7 +155,7 @@ final class ValidatorTest extends TestCase
         $this->assertSame(['Password is required'], $result->errors);
     }
 
-    public function test_returns_required_error_when_null_password(): void
+    public function testReturnsRequiredErrorWhenNullPassword(): void
     {
         // ACT
         $result = $this->validator->isValidPassword(null);
@@ -164,9 +164,9 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result->valid);
         $this->assertSame(['Password is required'], $result->errors);
     }
-        // --- isValidAge ---
+    // --- isValidAge ---
 
-    public function test_returns_true_when_valid_age(): void
+    public function testReturnsTrueWhenValidAge(): void
     {
         // ACT
         $result = $this->validator->isValidAge(25);
@@ -175,7 +175,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_returns_true_when_age_is_zero(): void
+    public function testReturnsTrueWhenAgeIsZero(): void
     {
         // ACT
         $result = $this->validator->isValidAge(0);
@@ -184,7 +184,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_returns_true_when_age_is_max(): void
+    public function testReturnsTrueWhenAgeIsMax(): void
     {
         // ACT
         $result = $this->validator->isValidAge(150);
@@ -193,7 +193,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_returns_false_when_age_is_negative(): void
+    public function testReturnsFalseWhenAgeIsNegative(): void
     {
         // ACT
         $result = $this->validator->isValidAge(-1);
@@ -202,7 +202,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_age_exceeds_max(): void
+    public function testReturnsFalseWhenAgeExceedsMax(): void
     {
         // ACT
         $result = $this->validator->isValidAge(151);
@@ -211,7 +211,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_age_is_float(): void
+    public function testReturnsFalseWhenAgeIsFloat(): void
     {
         // ACT
         $result = $this->validator->isValidAge(25.5);
@@ -220,7 +220,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_age_is_string(): void
+    public function testReturnsFalseWhenAgeIsString(): void
     {
         // ACT
         $result = $this->validator->isValidAge('25');
@@ -229,7 +229,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_returns_false_when_age_is_null(): void
+    public function testReturnsFalseWhenAgeIsNull(): void
     {
         // ACT
         $result = $this->validator->isValidAge(null);
@@ -237,6 +237,4 @@ final class ValidatorTest extends TestCase
         // ASSERT
         $this->assertFalse($result);
     }
-
-
 }

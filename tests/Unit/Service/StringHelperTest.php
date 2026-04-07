@@ -1,17 +1,23 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\Tests\Unit\Service;
+
 use App\Service\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-final class StringHelperTest extends TestCase {
+final class StringHelperTest extends TestCase
+{
     private StringHelper $helper;
-    protected function setUp(): void {
+
+    protected function setUp(): void
+    {
         $this->helper = new StringHelper();
     }
-    public function test_returns_capitalized_string_when_all_lowercase(): void {
+
+    public function testReturnsCapitalizedStringWhenAllLowercase(): void
+    {
         // Arrange
         $input = 'hello';
 
@@ -22,7 +28,8 @@ final class StringHelperTest extends TestCase {
         $this->assertSame('Hello', $result);
     }
 
-    public function test_returns_capitalized_string_when_all_uppercase(): void {
+    public function testReturnsCapitalizedStringWhenAllUppercase(): void
+    {
         // Arrange
         $input = 'WORLD';
 
@@ -33,7 +40,8 @@ final class StringHelperTest extends TestCase {
         $this->assertSame('World', $result);
     }
 
-    public function test_returns_capitalized_string_when_null_input(): void {
+    public function testReturnsCapitalizedStringWhenNullInput(): void
+    {
         // Arrange
         $input = null;
 
@@ -43,7 +51,8 @@ final class StringHelperTest extends TestCase {
         // Assert
         $this->assertSame('', $result);
     }
-        public function test_returns_empty_string_when_empty_input(): void
+
+    public function testReturnsEmptyStringWhenEmptyInput(): void
     {
         // ACT
         $result = $this->helper->capitalize('');
@@ -52,7 +61,7 @@ final class StringHelperTest extends TestCase {
         $this->assertSame('', $result);
     }
 
-        public function test_returns_slug_when_simple_string(): void
+    public function testReturnsSlugWhenSimpleString(): void
     {
         // ACT
         $result = $this->helper->slugify('Hello World');
@@ -61,7 +70,7 @@ final class StringHelperTest extends TestCase {
         $this->assertSame('hello-world', $result);
     }
 
-    public function test_returns_trimmed_slug_when_spaces_around(): void
+    public function testReturnsTrimmedSlugWhenSpacesAround(): void
     {
         // ACT
         $result = $this->helper->slugify(' Spaces Everywhere ');
@@ -70,7 +79,7 @@ final class StringHelperTest extends TestCase {
         $this->assertSame('spaces-everywhere', $result);
     }
 
-    public function test_returns_slug_without_special_chars(): void
+    public function testReturnsSlugWithoutSpecialChars(): void
     {
         // ACT
         $result = $this->helper->slugify("C'est l'ete !");
@@ -79,7 +88,7 @@ final class StringHelperTest extends TestCase {
         $this->assertSame('cest-lete', $result);
     }
 
-    public function test_returns_empty_string_when_slugify_empty_input(): void
+    public function testReturnsEmptyStringWhenSlugifyEmptyInput(): void
     {
         // ACT
         $result = $this->helper->slugify('');

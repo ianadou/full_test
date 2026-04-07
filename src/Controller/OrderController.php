@@ -82,7 +82,7 @@ final class OrderController extends AbstractController
     {
         $order = $this->orderStore->find($id);
 
-        if ($order === null) {
+        if (null === $order) {
             return $this->json(['error' => 'Order not found'], Response::HTTP_NOT_FOUND);
         }
 
