@@ -203,5 +203,88 @@ final class PricingEngineTest extends TestCase
         // ASSERT
         $this->assertSame(12.0, $result);
     }
+        // --- calculateSurge ---
+
+    public function test_returns_normal_rate_when_weekday_afternoon(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(15, 'tuesday');
+
+        // ASSERT
+        $this->assertSame(1.0, $result);
+    }
+
+    public function test_returns_lunch_rate_when_weekday_noon(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(12.5, 'wednesday');
+
+        // ASSERT
+        $this->assertSame(1.3, $result);
+    }
+
+    public function test_returns_dinner_rate_when_weekday_evening(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(20, 'thursday');
+
+        // ASSERT
+        $this->assertSame(1.5, $result);
+    }
+
+    public function test_returns_weekend_rate_when_friday_evening(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(21, 'friday');
+
+        // ASSERT
+        $this->assertSame(1.8, $result);
+    }
+
+    public function test_returns_sunday_rate_when_sunday(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(14, 'sunday');
+
+        // ASSERT
+        $this->assertSame(1.2, $result);
+    }
+
+    public function test_returns_closed_when_before_opening(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(9.59, 'monday');
+
+        // ASSERT
+        $this->assertSame(0.0, $result);
+    }
+
+    public function test_returns_open_when_exactly_10(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(10, 'monday');
+
+        // ASSERT
+        $this->assertSame(1.0, $result);
+    }
+
+    public function test_returns_closed_when_exactly_22(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(22, 'tuesday');
+
+        // ASSERT
+        $this->assertSame(0.0, $result);
+    }
+
+    public function test_returns_weekend_rate_when_exactly_19_on_saturday(): void
+    {
+        // ACT
+        $result = $this->engine->calculateSurge(19, 'saturday');
+
+        // ASSERT
+        $this->assertSame(1.8, $result);
+    }
+
 
 }

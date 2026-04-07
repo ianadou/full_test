@@ -79,4 +79,37 @@ final class PricingEngine
         return round(max(0.0, $discounted), 2);
     }
 
+        public function calculateSurge(float $hour, string $dayOfWeek): float
+    {
+        $day = strtolower($dayOfWeek);
+
+        if ($hour < 10 || $hour >= 22) {
+            return 0.0;
+        }
+
+        if ($day === 'sunday') {
+            return 1.2;
+        }
+
+        $isWeekend = in_array($day, ['friday', 'saturday'], true);
+
+        if ($isWeekend && $hour >= 19) {
+            return 1.8;
+        }
+
+        $isWeekday = in_array($day, ['monday', 'tuesday', 'wednesday', 'thursday'], true);
+
+        if ($isWeekday) {
+            if ($hour >= 12 && $hour < 13.5) {
+                return 1.3;
+            }
+
+            if ($hour >= 19 && $hour < 21) {
+                return 1.5;
+            }
+        }
+
+        return 1.0;
+    }
+
 }
